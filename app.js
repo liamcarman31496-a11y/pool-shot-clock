@@ -937,31 +937,57 @@ function playSound(
 // SCREEN WAKE LOCK
 // ==========================================
 
+let wakeLockPending = false;
+
 async function requestWakeLock() {
     if (!("wakeLock" in navigator)) return;
+    if (document.visibilityState !== "visible") return;
     if (wakeLock && !wakeLock.released) return;
+    if (wakeLockPending) return;
+
+    wakeLockPending = true;
 
     try {
-        wakeLock = await navigator.wakeLock.request(
-            "screen"
-        );
+        const lock = await navigator.wakeLock.request("screen");
+
+        wakeLock = lock;
+
+        lock.addEventListener("release", () => {
+            if (wakeLock === lock) {
+                wakeLock = null;
+            }
+
+            console.log("Screen wake lock released.");
+        });
+
+        console.log("Screen wake lock active.");
+
     } catch (error) {
         console.warn("Wake lock unavailable:", error);
+
+    } finally {
+        wakeLockPending = false;
     }
 }
 
-document.addEventListener(
-    "visibilitychange",
-    () => {
-        if (
-            document.visibilityState === "visible" &&
-            match.clockState === "running"
-        ) {
-            requestWakeLock();
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        requestWakeLock();
+
+        if (match.clockState === "running") {
             tick();
         }
     }
-);
+});
+
+document.addEventListener("pointerdown", requestWakeLock, {
+    passive: true
+});
+
+window.addEventListener("pageshow", requestWakeLock);
+
+requestWakeLock();
+
 
 // ==========================================
 // COUNTRY OPTIONS
