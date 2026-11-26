@@ -1,0 +1,1430 @@
+
+/* ==========================================
+   POOL SHOT CLOCK — VERSION 0.2
+   Layout and visual overrides
+   ========================================== */
+
+:root {
+    --green: #28b84b;
+    --green-bright: #83e6a0;
+    --green-dark: #23452e;
+
+    --blue: #477da9;
+    --blue-dark: #253e55;
+
+    --orange: #f59e0b;
+    --red: #ef4444;
+}
+
+/* Application layout */
+
+#app {
+    max-width: 1000px;
+    gap: 12px;
+}
+
+.match-display {
+    gap: 20px;
+    padding: 0;
+}
+
+/* Larger shot clock */
+
+#clock-container {
+    width: 210px;
+    flex: 0 0 210px;
+}
+
+#clock-value {
+    font-size: 80px;
+    letter-spacing: -3px;
+}
+
+#clock-mode-label {
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #8eb8db;
+}
+
+#clock-status {
+    margin-top: 4px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+}
+
+.ring-background,
+#ring-progress {
+    stroke-width: 13;
+}
+
+/* Scoreboard header */
+
+.scoreboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #17191c;
+    border-bottom: 1px solid var(--border);
+}
+
+.match-format {
+    flex: 1;
+    border: none;
+    font-size: 14px;
+    padding: 8px 12px;
+}
+
+#settings-btn {
+    min-width: 44px;
+    min-height: 36px;
+    padding: 2px 10px;
+    font-size: 23px;
+    line-height: 1;
+    color: #d1d5db;
+}
+
+/* Player identity */
+
+.player-row {
+    min-height: 82px;
+}
+
+.player-identity {
+    padding: 8px 12px;
+    gap: 12px;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+}
+
+.player-identity .player-name {
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: 0.2px;
+}
+
+.player-row.active .player-identity {
+    background: #26382c;
+    border-left-color: var(--green);
+}
+
+.flag {
+    width: 42px;
+    height: 28px;
+}
+
+/* Active player and extension indicators */
+
+.player-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.player-status .active-indicator {
+    color: var(--green-bright);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+}
+
+.player-status .scoreboard-extension {
+    color: var(--green-bright);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.scoreboard-extension.exhausted {
+    color: #81858c;
+}
+
+/* Set scores */
+
+.set-score {
+    width: 54px;
+    font-size: 34px;
+}
+
+.set-score.current {
+    background: #41464d;
+}
+
+.set-score.winner {
+    background: #294b32;
+    color: var(--green-bright);
+}
+
+/* Player control panels */
+
+.player-controls {
+    gap: 10px;
+}
+
+.player-panel {
+    padding: 10px;
+    gap: 8px;
+    border: 1px solid #383c42;
+}
+
+.player-panel.active {
+    border-color: #438653;
+    background: #1e2922;
+}
+
+.panel-title {
+    color: #f5f5f5;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+.player-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: stretch;
+}
+
+/* Rack controls */
+
+.score-controls {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 5px;
+}
+
+.score-controls button {
+    min-height: 64px;
+    font-size: 17px;
+}
+
+.score-controls .subtract-btn {
+    font-size: 24px;
+    color: #a9adb4;
+}
+
+.rack-btn {
+    background: #3a3e45;
+}
+
+/* Prominent extension buttons */
+
+.extension-btn {
+    min-height: 84px;
+    padding: 6px;
+    gap: 3px;
+
+    background: var(--green-dark);
+    border: 1px solid #448c59;
+}
+
+.extension-btn .extension-count {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--green-bright);
+    font-variant-numeric: tabular-nums;
+}
+
+.extension-btn .extension-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: #ffffff;
+}
+
+.extension-btn .extension-detail {
+    font-size: 11px;
+    color: #a9cbb3;
+}
+
+.extension-btn.exhausted,
+.extension-btn:disabled {
+    background: #292c31;
+    border-color: #42464d;
+    opacity: 0.65;
+}
+
+.extension-btn.exhausted .extension-count,
+.extension-btn:disabled .extension-count {
+    color: #8b9097;
+}
+
+/* Primary clock controls */
+
+#clock-controls {
+    gap: 10px;
+}
+
+.primary-btn {
+    min-height: 78px;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+#pause-btn {
+    background: #26753d;
+    border-color: #438653;
+    color: #ffffff;
+}
+
+#pause-btn.running {
+    background: #b77916;
+    border-color: #d49a36;
+    color: #ffffff;
+}
+
+#pause-btn:disabled {
+    background: #34373c;
+    border-color: #444850;
+}
+
+#reset-btn {
+    background: #eeeeee;
+    color: #111111;
+}
+
+/* Clock duration selection */
+
+#clock-mode-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.clock-mode-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    min-height: 48px;
+    padding: 6px 10px;
+
+    background: #292c31;
+    border: 1px solid #45494e;
+}
+
+.clock-mode-btn span {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.clock-mode-btn strong {
+    font-size: 20px;
+    font-variant-numeric: tabular-nums;
+}
+
+#after-break-btn.selected {
+    background: var(--blue-dark);
+    border-color: var(--blue);
+    color: #b4d7f4;
+}
+
+#normal-clock-btn.selected {
+    background: var(--green-dark);
+    border-color: #448c59;
+    color: var(--green-bright);
+}
+
+/* Secondary controls */
+
+.secondary-controls {
+    padding-top: 0;
+    gap: 6px;
+}
+
+.secondary-controls button {
+    font-size: 13px;
+    min-height: 44px;
+}
+
+/* Clockless mode */
+
+#app.clock-hidden .match-display {
+    width: 100%;
+}
+
+#app.clock-hidden .player-row {
+    min-height: 100px;
+}
+
+#app.clock-hidden .player-name {
+    font-size: 34px;
+}
+
+#app.clock-hidden .set-score {
+    width: 70px;
+    font-size: 42px;
+}
+
+#app.clock-hidden #clock-mode-controls,
+#app.clock-hidden .scoreboard-extension {
+    display: none;
+}
+
+#app.clock-hidden .player-actions {
+    grid-template-columns: 1fr;
+}
+
+/* Settings version label */
+
+.version-label {
+    margin-top: 18px;
+    text-align: center;
+    color: #777c84;
+    font-size: 11px;
+}
+
+/* ==========================================
+   PORTRAIT PHONE
+   ========================================== */
+
+@media (max-width: 600px)
+       and (orientation: portrait) {
+
+    #app {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .match-display {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #clock-container {
+        width: 190px;
+        flex: 0 0 auto;
+    }
+
+    #clock-value {
+        font-size: 72px;
+    }
+
+    .scoreboard {
+        width: 100%;
+    }
+
+    .match-format {
+        font-size: 12px;
+    }
+
+    .player-row {
+        min-height: 66px;
+    }
+
+    .player-identity {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .player-identity .player-name {
+        font-size: 21px;
+    }
+
+    .flag {
+        width: 30px;
+        height: 20px;
+    }
+
+    .set-score {
+        width: 34px;
+        font-size: 26px;
+    }
+
+    .player-panel {
+        padding: 8px;
+    }
+
+    .panel-title {
+        font-size: 17px;
+    }
+
+    .player-actions {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    .score-controls button {
+        min-height: 44px;
+    }
+
+    .extension-btn {
+        min-height: 78px;
+    }
+
+    .primary-btn {
+        min-height: 74px;
+        font-size: 25px;
+    }
+
+    .clock-mode-btn {
+        flex-direction: column;
+        gap: 2px;
+        min-height: 48px;
+    }
+
+    #app.clock-hidden .player-name {
+        font-size: 22px;
+    }
+
+    #app.clock-hidden .set-score {
+        width: 36px;
+        font-size: 30px;
+    }
+}
+
+/* ==========================================
+   LANDSCAPE PHONE
+   Optimized for approximately 852 x 393
+   ========================================== */
+
+@media (orientation: landscape)
+       and (max-height: 500px) {
+
+    #app {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        max-width: 1100px;
+
+        padding-top: max(
+            5px, env(safe-area-inset-top)
+        );
+
+        padding-bottom: max(
+            5px, env(safe-area-inset-bottom)
+        );
+
+        padding-left: max(
+            10px, env(safe-area-inset-left)
+        );
+
+        padding-right: max(
+            10px, env(safe-area-inset-right)
+        );
+
+        gap: 6px;
+    }
+
+    .match-display {
+        gap: 14px;
+        padding: 0;
+    }
+
+    #clock-container {
+        width: 158px;
+        flex: 0 0 158px;
+    }
+
+    #clock-value {
+        font-size: 64px;
+    }
+
+    #clock-mode-label {
+        font-size: 9px;
+        margin-top: 3px;
+    }
+
+    #clock-status {
+        font-size: 8px;
+        margin-top: 2px;
+    }
+
+    .match-format {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
+    #settings-btn {
+        min-height: 30px;
+        font-size: 20px;
+    }
+
+    .player-row {
+        min-height: 59px;
+    }
+
+    .player-identity {
+        padding: 5px 10px;
+        gap: 10px;
+    }
+
+    .player-identity .player-name {
+        font-size: 25px;
+    }
+
+    .player-info {
+        gap: 3px;
+    }
+
+    .player-status {
+        gap: 10px;
+    }
+
+    .player-status .active-indicator {
+        font-size: 9px;
+    }
+
+    .player-status .scoreboard-extension {
+        font-size: 11px;
+    }
+
+    .flag {
+        width: 36px;
+        height: 24px;
+    }
+
+    .set-score {
+        width: 48px;
+        font-size: 32px;
+    }
+
+    /* Compact player controls */
+
+    .player-controls {
+        gap: 8px;
+    }
+
+    .player-panel {
+        padding: 5px 8px;
+        gap: 4px;
+    }
+
+    .panel-title {
+        font-size: 16px;
+        line-height: 1.1;
+    }
+
+    .player-actions {
+        gap: 8px;
+    }
+
+    .score-controls {
+        grid-template-columns: 34px 1fr;
+        gap: 4px;
+    }
+
+    .score-controls button {
+        min-height: 54px;
+        font-size: 16px;
+    }
+
+    .score-controls .subtract-btn {
+        font-size: 22px;
+    }
+
+    .extension-btn {
+        min-height: 54px;
+        padding: 3px;
+        gap: 1px;
+    }
+
+    .extension-btn .extension-count {
+        font-size: 25px;
+    }
+
+    .extension-btn .extension-title {
+        font-size: 10px;
+    }
+
+    .extension-btn .extension-detail {
+        display: none;
+    }
+
+    /* Large primary controls */
+
+    #clock-controls {
+        gap: 8px;
+    }
+
+    .primary-btn {
+        min-height: 56px;
+        font-size: 24px;
+    }
+
+    /* Clock mode selection */
+
+    #clock-mode-controls {
+        gap: 8px;
+    }
+
+    .clock-mode-btn {
+        min-height: 38px;
+        padding: 3px 8px;
+    }
+
+    .clock-mode-btn span {
+        font-size: 11px;
+    }
+
+    .clock-mode-btn strong {
+        font-size: 18px;
+    }
+
+    /* Secondary controls */
+
+    .secondary-controls {
+        border: none;
+    }
+
+    .secondary-controls button {
+        min-height: 32px;
+        font-size: 12px;
+    }
+
+    /* Clockless landscape */
+
+    #app.clock-hidden .player-row {
+        min-height: 74px;
+    }
+
+    #app.clock-hidden .player-name {
+        font-size: 30px;
+    }
+
+    #app.clock-hidden .set-score {
+        width: 60px;
+        font-size: 36px;
+    }
+}
+
+/* Smaller landscape displays */
+
+@media (orientation: landscape)
+       and (max-height: 370px) {
+
+    #app {
+        gap: 4px;
+    }
+
+    #clock-container {
+        width: 138px;
+        flex-basis: 138px;
+    }
+
+    #clock-value {
+        font-size: 56px;
+    }
+
+    .player-row {
+        min-height: 50px;
+    }
+
+    .player-identity .player-name {
+        font-size: 22px;
+    }
+
+    .primary-btn {
+        min-height: 48px;
+    }
+
+    .player-panel {
+        padding: 4px 6px;
+    }
+}
+
+
+
+/* ==========================================
+   VERSION 0.3a — POSSESSION CONTROLS
+   ========================================== */
+
+#clock-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#switch-btn {
+    background: #285777;
+    border: 1px solid #477da9;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#switch-btn:disabled {
+    background: #34373c;
+    border-color: #444850;
+    opacity: 0.5;
+}
+
+.switch-icon {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.player-row {
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.player-row.active {
+    box-shadow: inset 0 0 0 1px #438653;
+}
+
+.player-row.active .player-name {
+    color: #ffffff;
+}
+
+.player-row:not(.active) .player-name {
+    color: #bfc3c9;
+}
+
+.player-row.active .player-identity {
+    background: #263c2d;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 600px)
+       and (orientation: portrait) {
+
+    #clock-controls {
+        gap: 6px;
+    }
+
+    #clock-controls .primary-btn {
+        font-size: 19px;
+        padding: 6px;
+    }
+
+    #switch-btn {
+        gap: 4px;
+    }
+
+    .switch-icon {
+        font-size: 22px;
+    }
+}
+
+@media (orientation: landscape)
+       and (max-height: 500px) {
+
+    #clock-controls .primary-btn {
+        min-height: 56px;
+        font-size: 24px;
+    }
+}
+
+
+/* ==========================================
+   VERSION 0.3b — PRECISION CLOCK ADJUSTMENT
+   ========================================== */
+
+#clock-container {
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#clock-container:focus-visible {
+    outline: 2px solid #477da9;
+    outline-offset: 3px;
+    border-radius: 50%;
+}
+
+#adjust-clock-dialog {
+    box-sizing: border-box;
+
+    width: min(420px, 94vw);
+    max-height: 92dvh;
+
+    padding: 18px;
+    overflow-y: auto;
+
+    background: #1c1e22;
+    color: #f5f5f5;
+
+    border: 1px solid #50545a;
+    border-radius: 12px;
+}
+
+#adjust-clock-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.78);
+}
+
+#adjust-clock-dialog h2 {
+    margin: 0 0 14px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.adjust-clock-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 12px;
+    margin-bottom: 12px;
+
+    background: #101114;
+    border-radius: 8px;
+}
+
+#adjust-time-input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+
+    background: transparent;
+    color: #ffffff;
+    border: none;
+
+    text-align: center;
+    font-size: 64px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+#adjust-time-input::-webkit-inner-spin-button,
+#adjust-time-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.adjust-clock-display span {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #a1a7af;
+}
+
+.adjustment-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.adjustment-grid button {
+    min-height: 54px;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    background: #34383e;
+    border: 1px solid #50545a;
+}
+
+.adjustment-grid button[data-adjust^="-"] {
+    color: #f3c5a3;
+}
+
+.adjustment-grid button:not([data-adjust^="-"]) {
+    color: #a3dfb3;
+}
+
+.adjustment-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.adjustment-actions button {
+    min-height: 52px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+#cancel-adjustment {
+    background: #383c42;
+}
+
+#apply-adjustment {
+    background: #26753d;
+    border-color: #438653;
+    color: #ffffff;
+}
+
+@media (orientation: landscape)
+       and (max-height: 500px) {
+
+    #adjust-clock-dialog {
+        width: min(460px, 90vw);
+        padding: 12px;
+    }
+
+    #adjust-clock-dialog h2 {
+        font-size: 17px;
+        margin-bottom: 8px;
+    }
+
+    .adjust-clock-display {
+        padding: 6px;
+        margin-bottom: 8px;
+    }
+
+    #adjust-time-input {
+        font-size: 48px;
+    }
+
+    .adjustment-grid {
+        gap: 6px;
+    }
+
+    .adjustment-grid button {
+        min-height: 44px;
+        font-size: 20px;
+    }
+
+    .adjustment-actions {
+        margin-top: 8px;
+    }
+
+    .adjustment-actions button {
+        min-height: 44px;
+    }
+}
+
+
+/* ========================================
+   v0.3c — FARGO RATING
+   ======================================== */
+
+.fargo-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 44px;
+    margin-right: 24px;
+
+    font-size: 20px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+
+    color: #858991;
+    white-space: nowrap;
+}
+
+@media (max-width: 600px)
+       and (orientation: portrait) {
+
+    .fargo-rating {
+        flex-basis: 34px;
+        margin-right: 10px;
+        font-size: 16px;
+    }
+}
+
+/* v0.5 — Larger scoreboard flags */
+
+.flag {
+    width: 56px;
+    height: 42px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+@media (orientation: portrait) {
+    .flag {
+        width: 44px;
+        height: 33px;
+    }
+}
+
+
+/* Full-size broadcast flags */
+
+.flag {
+    width: 72px;
+    height: 54px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+@media (orientation: portrait) {
+    .flag {
+        width: 56px;
+        height: 42px;
+    }
+}
+
+/* Fargo rating background fix */
+
+.fargo-rating {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
+/* Continuous active-player background */
+
+.player-row.active {
+    background: #263c2d;
+}
+
+.player-row.active .fargo-rating {
+    color: #a3b0a6;
+}
+
+
+/* Remove active-row outline */
+
+.player-row.active {
+    box-shadow: none;
+}
+
+
+
+/* Fargo rating beside player name */
+
+.player-name-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.player-name-line .player-name {
+    min-width: 0;
+    flex: 0 1 auto;
+}
+
+.player-name-line .fargo-rating {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+@media (orientation: portrait) {
+    .player-name-line {
+        gap: 8px;
+    }
+
+    .player-name-line .fargo-rating {
+        font-size: 15px;
+    }
+}
+
+/* v0.6 — Touch-friendly clock adjustment */
+
+#adjust-clock-dialog {
+    box-sizing: border-box;
+    width: min(540px, 94vw);
+    padding: 16px;
+    color-scheme: dark;
+}
+
+#adjust-clock-dialog h2 {
+    margin: 0 0 12px;
+    font-size: 20px;
+}
+
+#adjust-time-input {
+    font-size: 48px;
+    font-weight: 800;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    padding: 8px 0;
+    min-width: 0;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+#adjust-time-input::-webkit-inner-spin-button,
+#adjust-time-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+#adjust-clock-dialog .adjustment-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.adjustment-grid [data-adjust="-5"]   { order: 1; }
+.adjustment-grid [data-adjust="5"]    { order: 2; }
+.adjustment-grid [data-adjust="-1"]   { order: 3; }
+.adjustment-grid [data-adjust="1"]    { order: 4; }
+.adjustment-grid [data-adjust="-0.1"] { order: 5; }
+.adjustment-grid [data-adjust="0.1"]  { order: 6; }
+
+#adjust-clock-dialog .adjustment-grid button {
+    min-height: 48px;
+    font-size: 20px;
+    touch-action: manipulation;
+}
+
+#adjust-clock-dialog .adjustment-actions button {
+    min-height: 46px;
+    font-size: 16px;
+}
+
+@media (orientation: landscape) {
+    #adjust-clock-dialog[open] {
+        display: grid;
+        grid-template-columns: 36% 1fr;
+        gap: 12px;
+        max-height: 94dvh;
+    }
+
+    #adjust-clock-dialog h2,
+    #adjust-clock-dialog .adjustment-actions {
+        grid-column: 1 / -1;
+        margin: 0;
+    }
+
+    #adjust-clock-dialog .adjust-clock-display {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 0;
+        min-width: 0;
+    }
+
+    #adjust-clock-dialog .adjustment-grid {
+        margin: 0;
+    }
+
+    #adjust-clock-dialog .adjust-clock-display span {
+        font-size: 10px;
+        white-space: nowrap;
+    }
+}
+
+
+/* v0.6 — Native-style grouped settings */
+
+#settings-dialog {
+    box-sizing: border-box;
+    width: min(760px, 96vw);
+    max-height: 94dvh;
+    padding: 0;
+    overflow: hidden;
+    color-scheme: dark;
+    background: #151619;
+}
+
+#settings-form {
+    display: flex;
+    flex-direction: column;
+    max-height: 92dvh;
+    min-height: 0;
+}
+
+.settings-header {
+    flex-shrink: 0;
+    padding: 14px 18px;
+    border-bottom: 1px solid #383a40;
+    background: #202125;
+}
+
+#settings-dialog h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.settings-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: start;
+}
+
+#settings-dialog fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 4px 12px;
+    gap: 0;
+    border: 1px solid #35373c;
+    border-radius: 12px;
+    background: #24262a;
+}
+
+#settings-dialog legend {
+    padding: 0 6px;
+    color: #a9adb5;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+#settings-dialog fieldset label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 14px;
+    color: #eeeeef;
+    border-bottom: 1px solid #383a40;
+}
+
+#settings-dialog fieldset label:last-child {
+    border-bottom: none;
+}
+
+#settings-dialog input:not([type="checkbox"]),
+#settings-dialog select {
+    box-sizing: border-box;
+    flex: 0 1 auto;
+    width: 48%;
+    min-width: 0;
+    min-height: 34px;
+    padding: 5px 7px;
+    margin: 0;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    background: #191a1e;
+    color: #d7d9df;
+}
+
+#settings-dialog input[type="number"] {
+    width: 76px;
+    text-align: right;
+}
+
+#settings-dialog input[type="text"] {
+    text-align: right;
+}
+
+#settings-dialog select {
+    appearance: auto;
+    -webkit-appearance: auto;
+}
+
+#settings-dialog input[type="range"] {
+    padding: 0;
+    background: transparent;
+    accent-color: #30d158;
+}
+
+#settings-dialog input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    flex: 0 0 46px;
+    width: 46px;
+    height: 28px;
+    margin: 0;
+    order: 2;
+    border: none;
+    border-radius: 20px;
+    background: #53545a;
+    transition: background 0.15s;
+}
+
+#settings-dialog input[type="checkbox"]::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.15s;
+}
+
+#settings-dialog input[type="checkbox"]:checked {
+    background: #30d158;
+}
+
+#settings-dialog input[type="checkbox"]:checked::after {
+    transform: translateX(18px);
+}
+
+#settings-dialog #test-sound-btn {
+    min-height: 40px;
+    margin: 8px 0;
+    color: #64aaff;
+    background: #303238;
+}
+
+.settings-footer {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    border-top: 1px solid #383a40;
+    background: #202125;
+}
+
+#settings-dialog .settings-actions {
+    gap: 10px;
+}
+
+#settings-dialog .settings-actions button {
+    min-height: 42px;
+    font-size: 15px;
+}
+
+#settings-dialog #new-match-btn {
+    min-height: 34px;
+    margin-top: 6px;
+    background: transparent;
+    color: #ff6961;
+    font-size: 13px;
+}
+
+#settings-dialog .version-label {
+    margin: 2px 0 0;
+    text-align: center;
+    font-size: 10px;
+    color: #777b83;
+}
+
+@media (orientation: landscape) {
+    .settings-body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .settings-header {
+        padding: 8px 14px;
+    }
+
+    .settings-footer {
+        padding: 6px 12px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px 16px;
+    }
+
+    #settings-dialog #new-match-btn {
+        width: auto;
+        margin: 0;
+        padding: 0 12px;
+    }
+
+    #settings-dialog .version-label {
+        display: none;
+    }
+}

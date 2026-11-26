@@ -1,0 +1,867 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#101114">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <title>Pool Shot Clock</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="layout-v2.css">
+
+    <!-- v0.7 — Progressive Web App -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="theme-color" content="#101114">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Shot Clock">
+
+</head>
+
+<body>
+
+<main id="app">
+
+    <!-- Main match display -->
+
+    <section class="match-display">
+
+        <!-- Circular shot clock -->
+
+        <div id="clock-container"
+             role="button"
+             tabindex="0"
+             aria-label="Adjust shot clock"
+             title="Tap to adjust remaining time">
+
+            <svg class="clock-ring" viewBox="0 0 200 200">
+
+                <circle
+                    class="ring-background"
+                    cx="100" cy="100" r="85"
+                />
+
+                <circle
+                    id="ring-progress"
+                    cx="100" cy="100" r="85"
+                />
+
+            </svg>
+
+            <div class="clock-content">
+
+                <span id="clock-value">60</span>
+
+                <span id="clock-mode-label">
+                    AFTER BREAK
+                </span>
+
+                <span id="clock-status">
+                    READY
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- Broadcast scoreboard -->
+
+        <div class="scoreboard">
+
+            <div class="scoreboard-header">
+
+                <div id="match-format"
+                     class="match-format">
+
+                    Race to 4 — Best of 3 Sets
+
+                </div>
+
+                <button id="settings-btn"
+                        aria-label="Match settings">
+                    ⚙
+                </button>
+
+            </div>
+
+            <div id="scoreboard-grid">
+
+                <!-- Player 1 -->
+
+                <div id="player-1-row"
+                     class="player-row active">
+
+                    <div class="player-identity">
+
+                        <img id="flag-1"
+                             class="flag"
+                             alt=""
+                             hidden>
+
+                        <div class="player-info">
+
+                            <div class="player-name-line">
+<span id="name-1"
+                                  class="player-name">
+                                PLAYER 1
+                            </span>
+<div id="fargo-1"
+                         class="fargo-rating"
+                         hidden></div>
+</div>
+
+                            <div class="player-status">
+
+                                <span id="active-1"
+                                      class="active-indicator">
+                                    AT TABLE
+                                </span>
+
+                                <span id="scoreboard-ext-1"
+                                      class="scoreboard-extension">
+                                    1 EXT LEFT
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div id="scores-1"
+                         class="set-scores">
+
+                        <span class="set-score current">0</span>
+                        <span class="set-score">0</span>
+                        <span class="set-score">0</span>
+
+                    </div>
+
+                </div>
+
+                <!-- Player 2 -->
+
+                <div id="player-2-row"
+                     class="player-row">
+
+                    <div class="player-identity">
+
+                        <img id="flag-2"
+                             class="flag"
+                             alt=""
+                             hidden>
+
+                        <div class="player-info">
+
+                            <div class="player-name-line">
+<span id="name-2"
+                                  class="player-name">
+                                PLAYER 2
+                            </span>
+<div id="fargo-2"
+                         class="fargo-rating"
+                         hidden></div>
+</div>
+
+                            <div class="player-status">
+
+                                <span id="active-2"
+                                      class="active-indicator"
+                                      hidden>
+                                    AT TABLE
+                                </span>
+
+                                <span id="scoreboard-ext-2"
+                                      class="scoreboard-extension">
+                                    1 EXT LEFT
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div id="scores-2"
+                         class="set-scores">
+
+                        <span class="set-score current">0</span>
+                        <span class="set-score">0</span>
+                        <span class="set-score">0</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Player controls -->
+
+    <section class="player-controls">
+
+        <!-- Player 1 controls -->
+
+        <div id="player-panel-1"
+             class="player-panel active">
+
+            <span id="control-name-1"
+                  class="panel-title">
+                PLAYER 1
+            </span>
+
+            <div class="player-actions">
+
+                <div class="score-controls">
+
+                    <button id="subtract-1"
+                            class="subtract-btn"
+                            aria-label="Subtract player 1 rack">
+                        −
+                    </button>
+
+                    <button id="rack-1"
+                            class="rack-btn">
+                        + RACK
+                    </button>
+
+                </div>
+
+                <button id="extension-1"
+                        class="extension-btn">
+
+                    <span id="extension-count-1"
+                          class="extension-count">
+                        1 / 1
+                    </span>
+
+                    <span class="extension-title">
+                        EXTENSION
+                    </span>
+
+                    <span id="extensions-left-1"
+                          class="extension-detail">
+                        1 remaining
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Player 2 controls -->
+
+        <div id="player-panel-2"
+             class="player-panel">
+
+            <span id="control-name-2"
+                  class="panel-title">
+                PLAYER 2
+            </span>
+
+            <div class="player-actions">
+
+                <div class="score-controls">
+
+                    <button id="subtract-2"
+                            class="subtract-btn"
+                            aria-label="Subtract player 2 rack">
+                        −
+                    </button>
+
+                    <button id="rack-2"
+                            class="rack-btn">
+                        + RACK
+                    </button>
+
+                </div>
+
+                <button id="extension-2"
+                        class="extension-btn">
+
+                    <span id="extension-count-2"
+                          class="extension-count">
+                        1 / 1
+                    </span>
+
+                    <span class="extension-title">
+                        EXTENSION
+                    </span>
+
+                    <span id="extensions-left-2"
+                          class="extension-detail">
+                        1 remaining
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Primary shot clock controls -->
+
+    <section id="clock-controls">
+
+        <button id="pause-btn"
+                class="primary-btn">
+            START
+        </button>
+
+        <button id="reset-btn"
+                class="primary-btn">
+            RESET
+        </button>
+
+        <button id="switch-btn"
+                class="primary-btn">
+            <span class="switch-icon">⇄</span>
+            SWITCH
+        </button>
+
+    </section>
+
+    <!-- Clock duration selection -->
+
+    <section id="clock-mode-controls">
+
+        <button id="after-break-btn"
+                class="clock-mode-btn selected">
+
+            <span>AFTER BREAK</span>
+
+            <strong id="after-break-label">
+                60s
+            </strong>
+
+        </button>
+
+        <button id="normal-clock-btn"
+                class="clock-mode-btn">
+
+            <span>NORMAL SHOT</span>
+
+            <strong id="normal-clock-label">
+                30s
+            </strong>
+
+        </button>
+
+    </section>
+
+    <!-- Secondary controls -->
+
+    <footer class="secondary-controls">
+
+        <button id="undo-btn">
+            ↶ Undo
+        </button>
+
+        <button id="hide-clock-btn">
+            Hide Clock
+        </button>
+
+        <button id="shootout-btn">
+            Shootout
+        </button>
+
+    </footer>
+
+    <!-- Shootout panel -->
+
+    <section id="shootout-panel" hidden>
+
+        <h2>SHOOTOUT</h2>
+
+        <div id="shootout-round">
+            Round 1
+        </div>
+
+        <div class="shootout-row">
+
+            <span id="shootout-name-1">
+                PLAYER 1
+            </span>
+
+            <div id="attempts-1"></div>
+
+            <strong id="shootout-score-1">
+                0
+            </strong>
+
+        </div>
+
+        <div class="shootout-row">
+
+            <span id="shootout-name-2">
+                PLAYER 2
+            </span>
+
+            <div id="attempts-2"></div>
+
+            <strong id="shootout-score-2">
+                0
+            </strong>
+
+        </div>
+
+        <div class="shootout-controls">
+
+            <button id="made-btn">
+                MADE
+            </button>
+
+            <button id="missed-btn">
+                MISSED
+            </button>
+
+        </div>
+
+        <button id="exit-shootout-btn">
+            Exit Shootout
+        </button>
+
+    </section>
+
+</main>
+
+<!-- Settings dialog -->
+
+<dialog id="settings-dialog" tabindex="-1" autofocus>
+
+    <form id="settings-form">
+
+        <header class="settings-header">
+            <h2>Match Settings</h2>
+        </header>
+
+        <div class="settings-body">
+
+        <!-- Player identities -->
+
+        <fieldset>
+
+            <legend>Player 1</legend>
+
+            <label>
+                Name
+
+                <input id="input-name-1"
+                       type="text"
+                       value="PLAYER 1"
+                       maxlength="30">
+            </label>
+
+            <label>
+                FargoRate
+
+                <input id="input-fargo-1"
+                       type="number"
+                       min="0"
+                       max="999"
+                       step="1"
+                       placeholder="Optional">
+            </label>
+
+            <label>
+                Country
+
+                <select id="country-1">
+                    <option value="">None</option>
+                </select>
+            </label>
+
+        </fieldset>
+
+        <fieldset>
+            <legend>Player 2</legend>
+
+            <label>
+                Name
+
+                <input id="input-name-2"
+                       type="text"
+                       value="PLAYER 2"
+                       maxlength="30">
+            </label>
+
+            <label>
+                FargoRate
+
+                <input id="input-fargo-2"
+                       type="number"
+                       min="0"
+                       max="999"
+                       step="1"
+                       placeholder="Optional">
+            </label>
+
+            <label>
+                Country
+
+                <select id="country-2">
+                    <option value="">None</option>
+                </select>
+            </label>
+
+        </fieldset>
+
+        <!-- Match scoring -->
+
+        <fieldset>
+
+            <legend>Scoring</legend>
+
+            <label>
+                Match format
+
+                <select id="scoring-mode">
+
+                    <option value="race">
+                        Single Race
+                    </option>
+
+                    <option value="sets" selected>
+                        Sets
+                    </option>
+
+                </select>
+            </label>
+
+            <label>
+                Racks to win
+
+                <input id="race-length"
+                       type="number"
+                       min="1"
+                       value="4"
+                       required>
+            </label>
+
+            <label>
+                Best of sets
+
+                <input id="set-count"
+                       type="number"
+                       min="1"
+                       step="2"
+                       value="3"
+                       required>
+            </label>
+
+        </fieldset>
+
+        <!-- Shot clock configuration -->
+
+        <fieldset>
+
+            <legend>Shot Clock</legend>
+
+            <label>
+                Enable shot clock
+
+                <input id="clock-enabled"
+                       type="checkbox"
+                       checked>
+            </label>
+
+            <label>
+                Normal shot (s)
+
+                <input id="shot-duration"
+                       type="number"
+                       min="1"
+                       value="30"
+                       required>
+            </label>
+
+            <label>
+                After break (s)
+
+                <input id="first-shot-duration"
+                       type="number"
+                       min="1"
+                       value="60"
+                       required>
+            </label>
+
+            <label>
+                Extension (s)
+
+                <input id="extension-duration"
+                       type="number"
+                       min="1"
+                       value="30"
+                       required>
+            </label>
+
+            <label>
+                Extensions per rack
+
+                <input id="extensions-per-rack"
+                       type="number"
+                       min="0"
+                       value="1"
+                       required>
+            </label>
+
+            <label>
+                Orange warning (s)
+
+                <input id="orange-threshold"
+                       type="number"
+                       min="0"
+                       value="10"
+                       required>
+            </label>
+
+            <label>
+                Red warning (s)
+
+                <input id="red-threshold"
+                       type="number"
+                       min="0"
+                       value="5"
+                       required>
+            </label>
+
+        </fieldset>
+
+        <!-- Audio settings -->
+
+        <fieldset>
+
+            <legend>Audio</legend>
+
+            <label>
+                Sound profile
+
+                <select id="sound-profile">
+
+                    <option value="predator">
+                        Predator-style
+                    </option>
+
+                    <option value="matchroom">
+                        Matchroom-style
+                    </option>
+
+                    <option value="classic" selected>
+                        Classic Beep
+                    </option>
+
+                    <option value="silent">
+                        Silent
+                    </option>
+
+                </select>
+            </label>
+
+            <label>
+                Volume
+
+                <input id="sound-volume"
+                       type="range"
+                       min="0"
+                       max="100"
+                       value="75">
+            </label>
+
+            <label>
+                <input id="warning-enabled"
+                       type="checkbox" checked>
+                Warning chime
+            </label>
+
+            <label>
+                Warning at (s)
+
+                <input id="warning-seconds"
+                       type="number"
+                       min="1"
+                       max="300"
+                       value="10"
+                       required>
+            </label>
+
+            <label>
+                <input id="countdown-enabled"
+                       type="checkbox" checked>
+                Final countdown beeps
+            </label>
+
+            <label>
+                Countdown at (s)
+
+                <input id="countdown-seconds"
+                       type="number"
+                       min="1"
+                       max="60"
+                       value="5"
+                       required>
+            </label>
+
+            <label>
+                <input id="expiration-enabled"
+                       type="checkbox" checked>
+                Expiration sound
+            </label>
+
+            <button id="test-sound-btn"
+                    type="button">
+                Test Sound Sequence
+            </button>
+
+        </fieldset>
+
+        <!-- Shootout settings -->
+
+        <fieldset>
+
+            <legend>Shootout</legend>
+
+            <label>
+                Attempts per player
+
+                <input id="shootout-attempts"
+                       type="number"
+                       min="1"
+                       value="4"
+                       required>
+            </label>
+
+            <label>
+                Sudden death
+
+                <input id="sudden-death"
+                       type="checkbox"
+                       checked>
+            </label>
+
+        </fieldset>
+
+        <!-- Settings actions -->
+
+        </div>
+
+        <footer class="settings-footer">
+        <div class="settings-actions">
+
+            <button id="cancel-settings"
+                    type="button">
+                Cancel
+            </button>
+
+            <button id="save-settings"
+                    type="submit">
+                Save Settings
+            </button>
+
+        </div>
+
+        <button id="new-match-btn"
+                type="button">
+            Start New Match
+        </button>
+
+        <div class="version-label">
+            Pool Shot Clock · v0.6
+        </div>
+
+    </footer>
+    </form>
+
+</dialog>
+
+
+<!-- Precision clock adjustment -->
+
+<dialog id="adjust-clock-dialog" tabindex="-1" autofocus>
+
+    <h2>Adjust Shot Clock</h2>
+
+    <div class="adjust-clock-display">
+
+        <input id="adjust-time-input"
+               type="number"
+               inputmode="decimal"
+               min="0"
+               step="0.1"
+               value="30.0"
+               aria-label="Seconds remaining">
+
+        <span>SECONDS REMAINING</span>
+
+    </div>
+
+    <div class="adjustment-grid">
+
+        <button type="button" data-adjust="-5">
+            −5s
+        </button>
+
+        <button type="button" data-adjust="-1">
+            −1s
+        </button>
+
+        <button type="button" data-adjust="-0.1">
+            −0.1s
+        </button>
+
+        <button type="button" data-adjust="5">
+            +5s
+        </button>
+
+        <button type="button" data-adjust="1">
+            +1s
+        </button>
+
+        <button type="button" data-adjust="0.1">
+            +0.1s
+        </button>
+
+    </div>
+
+    <div class="adjustment-actions">
+
+        <button id="cancel-adjustment"
+                type="button">
+            CANCEL
+        </button>
+
+        <button id="apply-adjustment"
+                type="button">
+            APPLY
+        </button>
+
+    </div>
+
+</dialog>
+
+<script src="app.js"></script>
+
+
+</body>
+
+</html>
+

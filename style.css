@@ -1,0 +1,768 @@
+
+/* ========================================
+   POOL SHOT CLOCK — STYLESHEET
+   ======================================== */
+
+:root {
+    --background: #101114;
+    --panel: #1c1e22;
+    --surface: #292c31;
+    --button: #383c42;
+    --border: #50545a;
+    --text: #f5f5f5;
+    --muted: #9ca1a9;
+
+    --green: #28b84b;
+    --orange: #f59e0b;
+    --red: #ef4444;
+
+    --radius: 8px;
+}
+
+/* Global */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--background);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Helvetica Neue", Arial, sans-serif;
+    overscroll-behavior: none;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: var(--button);
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    min-height: 44px;
+    transition: background 0.12s,
+                transform 0.08s;
+}
+
+button:active {
+    transform: scale(0.97);
+    filter: brightness(1.2);
+}
+
+button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+}
+
+/* Application container */
+
+#app {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Header */
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.app-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    color: var(--muted);
+}
+
+#settings-btn {
+    background: transparent;
+    color: var(--muted);
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+/* Match display */
+
+.match-display {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 0;
+}
+
+/* Circular shot clock */
+
+#clock-container {
+    position: relative;
+    width: 180px;
+    flex: 0 0 180px;
+    aspect-ratio: 1;
+}
+
+.clock-ring {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ring-background {
+    fill: none;
+    stroke: #34373c;
+    stroke-width: 15;
+}
+
+#ring-progress {
+    fill: none;
+    stroke: var(--green);
+    stroke-width: 15;
+    stroke-dasharray: 534.071;
+    stroke-dashoffset: 0;
+    stroke-linecap: butt;
+
+    transition:
+        stroke-dashoffset 0.1s linear,
+        stroke 0.2s ease;
+}
+
+.clock-content {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
+}
+
+#clock-value {
+    font-size: 68px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -3px;
+    font-variant-numeric: tabular-nums;
+}
+
+#clock-status {
+    margin-top: 6px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--muted);
+}
+
+/* Broadcast scoreboard */
+
+.scoreboard {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    overflow: hidden;
+}
+
+.match-format {
+    padding: 9px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #d4d6da;
+    background: #17191c;
+    border-bottom: 1px solid var(--border);
+}
+
+.player-row {
+    display: flex;
+    align-items: stretch;
+    min-height: 58px;
+    background: #24262a;
+    cursor: pointer;
+}
+
+.player-row + .player-row {
+    border-top: 1px solid var(--border);
+}
+
+.player-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    border-left: 4px solid transparent;
+}
+
+.player-row.active .player-identity {
+    border-left-color: var(--green);
+    background: #29342c;
+}
+
+.player-identity span {
+    font-size: clamp(14px, 2.5vw, 23px);
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Country flag assets */
+
+.flag {
+    width: 36px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* Individual set scores */
+
+.set-scores {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.set-score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 44px;
+    min-height: 100%;
+    border-left: 1px solid var(--border);
+
+    background: #202226;
+    color: #777c84;
+
+    font-size: 26px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.set-score.current {
+    background: #3b3f45;
+    color: #ffffff;
+}
+
+.set-score.completed {
+    background: #292c31;
+    color: #d1d5db;
+}
+
+.set-score.winner {
+    background: #294b32;
+    color: #ffffff;
+}
+
+/* Player control panels */
+
+.player-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.player-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    background: var(--panel);
+    border: 1px solid #303338;
+    border-radius: var(--radius);
+}
+
+.panel-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.score-controls {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 8px;
+}
+
+.score-controls button {
+    min-height: 52px;
+    font-size: 16px;
+}
+
+.score-controls button:first-child {
+    font-size: 25px;
+    background: #292c31;
+    border-color: #42464d;
+}
+
+.extension-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    min-height: 65px;
+    background: #303944;
+    border: 1px solid #46515f;
+
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.extension-btn span {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: #b1bac6;
+}
+
+/* Main clock controls */
+
+#clock-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.primary-btn {
+    min-height: 76px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+#pause-btn {
+    background: #3a3e45;
+    border: 1px solid #50555d;
+}
+
+#pause-btn.running {
+    background: #805a20;
+    border-color: #a67b32;
+}
+
+#reset-btn {
+    background: #e8e9eb;
+    color: #141619;
+}
+
+/* Secondary controls */
+
+.secondary-controls {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border-top: 1px solid #303338;
+    padding-top: 8px;
+}
+
+.secondary-controls button {
+    flex: 1;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Clockless mode */
+
+#app.clock-hidden .scoreboard {
+    width: 100%;
+}
+
+#app.clock-hidden .player-row {
+    min-height: 76px;
+}
+
+#app.clock-hidden .set-score {
+    width: 60px;
+    font-size: 34px;
+}
+
+/* Settings dialog */
+
+dialog {
+    width: min(480px, 94vw);
+    max-height: 90dvh;
+    padding: 20px;
+
+    background: #1b1d21;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    overflow-y: auto;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.78);
+}
+
+dialog h2 {
+    margin: 0 0 20px;
+    font-size: 22px;
+}
+
+fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    margin: 0 0 18px;
+    padding: 14px;
+    border: 1px solid #41454c;
+    border-radius: var(--radius);
+}
+
+legend {
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: #c5c9cf;
+}
+
+fieldset label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: #c5c9cf;
+}
+
+fieldset label:has(input[type="checkbox"]) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 32px;
+}
+
+input:not([type="checkbox"]):not([type="range"]),
+select {
+    width: 100%;
+    min-height: 42px;
+    padding: 10px;
+
+    background: #101114;
+    color: var(--text);
+    border: 1px solid #444850;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--green);
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--green);
+}
+
+.settings-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+#save-settings {
+    background: #26753d;
+}
+
+#new-match-btn {
+    width: 100%;
+    margin-top: 12px;
+    background: transparent;
+    border: 1px solid #984444;
+    color: #f08080;
+}
+
+/* Shootout */
+
+#shootout-panel {
+    padding: 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+#shootout-panel h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+
+#shootout-round {
+    margin-bottom: 16px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.shootout-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    border-bottom: 1px solid #383b40;
+}
+
+.shootout-row > span {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.shootout-row strong {
+    font-size: 25px;
+    min-width: 25px;
+    text-align: right;
+}
+
+#attempts-1,
+#attempts-2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.attempt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #363940;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.attempt.made {
+    background: #258444;
+}
+
+.attempt.missed {
+    background: #b53636;
+}
+
+.shootout-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.shootout-controls button {
+    min-height: 60px;
+}
+
+#made-btn {
+    background: #26753d;
+}
+
+#missed-btn {
+    background: #a62e2e;
+}
+
+#exit-shootout-btn {
+    width: 100%;
+    margin-top: 12px;
+    background: transparent;
+    color: var(--muted);
+}
+
+/* Portrait phone layout */
+
+@media (max-width: 600px) {
+
+    #app {
+        gap: 12px;
+    }
+
+    .match-display {
+        gap: 10px;
+    }
+
+    #clock-container {
+        width: 112px;
+        flex-basis: 112px;
+    }
+
+    #clock-value {
+        font-size: 43px;
+        letter-spacing: -2px;
+    }
+
+    #clock-status {
+        font-size: 8px;
+        letter-spacing: 1px;
+        margin-top: 3px;
+    }
+
+    .match-format {
+        font-size: 10px;
+        padding: 7px;
+    }
+
+    .player-row {
+        min-height: 43px;
+    }
+
+    .player-identity {
+        gap: 5px;
+        padding: 7px 6px;
+        border-left-width: 3px;
+    }
+
+    .player-identity span {
+        font-size: 13px;
+    }
+
+    .flag {
+        width: 24px;
+        height: 16px;
+    }
+
+    .set-score {
+        width: 25px;
+        font-size: 19px;
+    }
+
+    .player-panel {
+        padding: 10px;
+    }
+
+    .primary-btn {
+        min-height: 82px;
+    }
+
+    #app.clock-hidden .set-score {
+        width: 44px;
+        font-size: 28px;
+    }
+}
+
+/* Landscape phone layout */
+
+@media (orientation: landscape)
+       and (max-height: 500px) {
+
+    #app {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 10px 18px;
+        max-width: 1100px;
+    }
+
+    .app-header {
+        grid-column: 1 / -1;
+    }
+
+    .match-display {
+        grid-column: 1;
+        padding: 0;
+        gap: 12px;
+    }
+
+    #clock-container {
+        width: 130px;
+        flex-basis: 130px;
+    }
+
+    #clock-value {
+        font-size: 48px;
+    }
+
+    .player-identity span {
+        font-size: 14px;
+    }
+
+    .set-score {
+        width: 30px;
+        font-size: 22px;
+    }
+
+    .player-controls {
+        grid-column: 2;
+        grid-row: 2 / 4;
+    }
+
+    .player-panel {
+        justify-content: center;
+        padding: 8px;
+    }
+
+    #clock-controls {
+        grid-column: 1;
+    }
+
+    .primary-btn {
+        min-height: 60px;
+    }
+
+    .secondary-controls {
+        grid-column: 1 / -1;
+    }
+
+    #shootout-panel {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Reduced motion accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+
+    * {
+        transition: none !important;
+    }
+}
+
