@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "pool-shot-clock-v0.7.2";
+const CACHE_NAME = "pool-shot-clock-v0.7.3";
 
 const ASSETS = [
     "./",
@@ -290,7 +290,14 @@ const ASSETS = [
 self.addEventListener("install", event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(ASSETS))
+            .then(cache => cache.addAll(
+                ASSETS.map(asset =>
+                    new Request(
+                        new URL(asset, self.location.href),
+                        { cache: "reload" }
+                    )
+                )
+            ))
             .then(() => self.skipWaiting())
     );
 });

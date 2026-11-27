@@ -2048,25 +2048,120 @@ $("adjust-time-input").addEventListener(
     }
 );
 
-// v0.7 — Offline PWA registration
+// v0.7.3 — PWA update manager
 
 if ("serviceWorker" in navigator && window.isSecureContext) {
+    let registration = null;
+    let previousController = navigator.serviceWorker.controller;
+    let checkingForUpdate = false;
+
+    function showUpdateButton() {
+        if (document.getElementById("pwa-update-btn")) return;
+
+        const button = document.createElement("button");
+
+        button.id = "pwa-update-btn";
+        button.textContent = "Update available — Tap to reload";
+
+        Object.assign(button.style, {
+            position: "fixed",
+            bottom: "12px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: "9999",
+            background: "#28b84b",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: "8px",
+            padding: "12px 20px",
+            fontSize: "15px",
+            fontWeight: "700",
+            whiteSpace: "nowrap",
+            boxShadow: "0 4px 20px #0008"
+        });
+
+        button.addEventListener("click", () => {
+            if (match.clockState === "running") {
+                if (!confirm("Pause the clock and update?")) return;
+                pauseClock();
+            }
+
+            saveState();
+            window.location.reload();
+        });
+
+        document.body.appendChild(button);
+    }
+
+    async function checkForUpdate() {
+        if (!registration || checkingForUpdate) return;
+        if (!navigator.onLine) return;
+
+        checkingForUpdate = true;
+
+        try {
+            await registration.update();
+            console.log("Update check completed.");
+        } catch (error) {
+            console.warn("Update check failed:", error);
+        } finally {
+            checkingForUpdate = false;
+        }
+    }
+
+    navigator.serviceWorker.addEventListener(
+        "controllerchange",
+        () => {
+            const controller = navigator.serviceWorker.controller;
+
+            if (previousController &&
+                controller !== previousController) {
+                showUpdateButton();
+            }
+
+            previousController = controller;
+        }
+    );
+
     window.addEventListener("load", async () => {
         try {
-            const registration =
-                await navigator.serviceWorker.register("./sw.js");
-
-            console.log(
-                "Service worker registered:",
-                registration.scope
+            registration = await navigator.serviceWorker.register(
+                "./sw.js",
+                { updateViaCache: "none" }
             );
 
-            await navigator.serviceWorker.ready;
+            await checkForUpdate();
 
-            console.log("Offline app ready.");
-
+            console.log("PWA update manager ready.");
         } catch (error) {
-            console.warn("Offline registration failed:", error);
+            console.warn("PWA registration failed:", error);
         }
     });
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+            checkForUpdate();
+        }
+    });
+
+    window.addEventListener("online", checkForUpdate);
 }
+
+// v0.7.3 — Prevent landscape rubber-banding
+
+document.addEventListener("touchmove", (event) => {
+    const landscape = window.matchMedia(
+        "(orientation: landscape)"
+    ).matches;
+
+    if (!landscape) return;
+
+    const dialog = event.target.closest("dialog");
+
+    if (dialog && dialog.open) return;
+
+    if (event.cancelable) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
