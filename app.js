@@ -1367,6 +1367,20 @@ function renderShootout() {
         $(`shootout-score-${n}`).textContent =
             shootoutScore(player);
 
+        const row = $(`shootout-name-${n}`).closest(".shootout-row");
+
+        row.classList.toggle(
+            "active",
+            !shootout.finished && shootout.activePlayer === player
+        );
+
+        const flag = $(`shootout-flag-${n}`);
+        const source = `flags/${settings.countries[player] || "white"}.svg`;
+
+        if (flag.getAttribute("src") !== source) {
+            flag.src = source;
+        }
+
         const container = $(`attempts-${n}`);
         container.replaceChildren();
 
@@ -1395,8 +1409,11 @@ function renderShootout() {
 
             container.appendChild(dot);
         }
+
+        container.scrollLeft = container.scrollWidth;
     }
 
+    $("shootout-undo-btn").disabled = !history.length;
     $("made-btn").disabled = shootout.finished;
     $("missed-btn").disabled = shootout.finished;
 }
@@ -2160,8 +2177,15 @@ document.addEventListener("touchmove", (event) => {
 
     if (dialog && dialog.open) return;
 
+    if (event.target.closest("#attempts-1, #attempts-2")) return;
+
     if (event.cancelable) {
         event.preventDefault();
     }
 }, { passive: false });
 
+
+
+$("shootout-undo-btn").addEventListener("click", () => {
+    $("undo-btn").click();
+});

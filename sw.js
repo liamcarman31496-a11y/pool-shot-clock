@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "pool-shot-clock-v0.7.3";
+const CACHE_NAME = "pool-shot-clock-v0.7.4";
 
 const ASSETS = [
     "./",
