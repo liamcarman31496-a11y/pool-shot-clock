@@ -1693,3 +1693,23 @@ body {
     display: none;
 }
 
+
+/* Landscape footer alignment */
+
+@media (orientation: landscape) {
+    .secondary-controls #undo-btn {
+        order: 1;
+        text-align: left;
+    }
+
+    .secondary-controls #shootout-btn {
+        order: 2;
+        text-align: center;
+    }
+
+    .secondary-controls #hide-clock-btn {
+        order: 3;
+        text-align: right;
+    }
+}
+

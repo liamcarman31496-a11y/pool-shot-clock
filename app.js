@@ -2179,6 +2179,12 @@ document.addEventListener("touchmove", (event) => {
 
     if (event.target.closest("#attempts-1, #attempts-2")) return;
 
+    // Allow normal touch interaction with controls.
+    if (event.target.closest(
+        "button, input, select, textarea, [role='button']"
+    )) return;
+
+
     if (event.cancelable) {
         event.preventDefault();
     }
