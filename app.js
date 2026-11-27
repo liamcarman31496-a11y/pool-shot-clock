@@ -27,6 +27,9 @@ const defaults = {
     clockEnabled: true,
     shotDuration: 30,
     firstShotDuration: 60,
+    breakDelay: 0,
+    shotDelay: 0,
+    switchDelay: 0,
     extensionDuration: 30,
     extensionsPerRack: 1,
 
@@ -68,6 +71,8 @@ function createMatch() {
             settings.extensionsPerRack
         ],
 
+        delayType: "breakDelay",
+        delayRemaining: settings.breakDelay ?? 0,
         remaining: settings.firstShotDuration,
         clockTotal: settings.firstShotDuration,
         clockState: "ready",
@@ -114,6 +119,7 @@ function loadState() {
         };
 
         match = saved.match || createMatch();
+        match.delayRemaining ??= 0;
         history = saved.history || [];
 
         if (!match.clockMode) {
@@ -143,6 +149,7 @@ function rememberState() {
     const snapshot = clone(match);
 
     if (snapshot.clockState === "running") {
+        snapshot.delayRemaining = getDelayRemaining();
         snapshot.remaining = getRemaining();
         snapshot.clockState = "paused";
     }
@@ -163,8 +170,9 @@ function undo() {
     const previous = history.pop();
 
     deadline = null;
-    settings = previous.settings;
+    settings = { ...defaults, ...previous.settings };
     match = previous.match;
+    match.delayRemaining ??= 0;
 
     if (!match.clockMode) {
         match.clockMode =
@@ -183,6 +191,26 @@ function undo() {
 // SHOT CLOCK
 // ==========================================
 
+function getDelayRemaining() {
+    const delay = match.delayRemaining ?? 0;
+
+    if (
+        match.clockState === "running" &&
+        deadline !== null
+    ) {
+        return Math.max(
+            0,
+            Math.min(
+                delay,
+                (deadline - performance.now()) / 1000
+                    - match.remaining
+            )
+        );
+    }
+
+    return delay;
+}
+
 function getRemaining() {
     if (
         match.clockState === "running" &&
@@ -190,7 +218,10 @@ function getRemaining() {
     ) {
         return Math.max(
             0,
-            (deadline - performance.now()) / 1000
+            Math.min(
+                match.remaining,
+                (deadline - performance.now()) / 1000
+            )
         );
     }
 
@@ -207,7 +238,7 @@ function startClock() {
 
     deadline =
         performance.now() +
-        match.remaining * 1000;
+        (match.remaining + (match.delayRemaining ?? 0)) * 1000;
 
     match.clockState = "running";
     lastDisplayedSecond = Math.ceil(match.remaining);
@@ -221,6 +252,7 @@ function startClock() {
 function pauseClock() {
     if (match.clockState !== "running") return;
 
+    match.delayRemaining = getDelayRemaining();
     match.remaining = getRemaining();
     match.clockState = "paused";
     deadline = null;
@@ -237,8 +269,18 @@ function toggleClock() {
     }
 }
 
-function prepareClock(duration, mode = "normal") {
+function prepareClock(duration, mode = "normal", delay = null) {
     deadline = null;
+
+    match.delayType =
+        delay !== null
+            ? "switchDelay"
+            : mode === "after-break"
+                ? "breakDelay"
+                : "shotDelay";
+
+    match.delayRemaining =
+        delay ?? settings[match.delayType] ?? 0;
 
     match.clockMode = mode;
 
@@ -282,6 +324,7 @@ function selectClockMode(mode) {
 }
 
 function expireClock() {
+    match.delayRemaining = 0;
     match.remaining = 0;
     match.clockState = "expired";
 
@@ -297,6 +340,8 @@ function expireClock() {
 
 function tick() {
     if (match.clockState !== "running") return;
+
+    match.delayRemaining = getDelayRemaining();
 
     const remaining = getRemaining();
     match.remaining = remaining;
@@ -369,8 +414,10 @@ function useExtension(player) {
 
     rememberState();
 
+    const delay = getDelayRemaining();
     const remaining = getRemaining();
 
+    match.delayRemaining = delay;
     match.activePlayer = player;
     match.extensions[player]--;
 
@@ -385,7 +432,7 @@ function useExtension(player) {
     if (match.clockState === "running") {
         deadline =
             performance.now() +
-            match.remaining * 1000;
+            (match.remaining + delay) * 1000;
     }
 
     lastDisplayedSecond = Math.ceil(match.remaining);
@@ -485,7 +532,8 @@ function switchPlayer() {
 
     prepareClock(
         settings.shotDuration,
-        "normal"
+        "normal",
+        settings.switchDelay ?? 0
     );
 
     startClock();
@@ -1477,6 +1525,10 @@ function openSettings() {
     $("first-shot-duration").value =
         settings.firstShotDuration;
 
+    $("break-delay").value = settings.breakDelay ?? 0;
+    $("shot-delay").value = settings.shotDelay ?? 0;
+    $("switch-delay").value = settings.switchDelay ?? 0;
+
     $("extension-duration").value =
         settings.extensionDuration;
 
@@ -1544,6 +1596,10 @@ function readSettings() {
 
         firstShotDuration:
             number("first-shot-duration"),
+
+        breakDelay: number("break-delay"),
+        shotDelay: number("shot-delay"),
+        switchDelay: number("switch-delay"),
 
         extensionDuration:
             number("extension-duration"),
@@ -1639,6 +1695,23 @@ function saveSettings(event) {
     const previous = settings;
 
     settings = next;
+
+    const delayType = match.delayType ?? (
+        match.clockMode === "after-break"
+            ? "breakDelay"
+            : "shotDelay"
+    );
+
+    match.delayType = delayType;
+
+    if (match.clockState === "ready") {
+        match.delayRemaining = settings[delayType] ?? 0;
+    } else {
+        match.delayRemaining = Math.min(
+            match.delayRemaining ?? 0,
+            settings[delayType] ?? 0
+        );
+    }
 
     if (formatChanged) {
         match = createMatch();
@@ -1853,6 +1926,7 @@ $("missed-btn").addEventListener(
 );
 
 window.addEventListener("pagehide", () => {
+    match.delayRemaining = getDelayRemaining();
     match.remaining = getRemaining();
     saveState();
 });
@@ -1949,6 +2023,10 @@ function applyClockAdjustment() {
     deadline = null;
 
     match.remaining = corrected;
+
+    if (corrected === 0) {
+        match.delayRemaining = 0;
+    }
 
     match.clockTotal = Math.max(
         adjustmentSnapshot.clockTotal,
