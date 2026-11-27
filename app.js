@@ -709,11 +709,11 @@ const TOURNAMENT_AUDIO_PROFILES = {
 
     predator: {
         fundamental: 523.25,
-        attack: 0.5,
+        attack: 2,
         duration: 280,
         spacing: 170,
         sustain: 0,
-        fade: 5,
+        fade: 12,
 
         db: [
             0, -52.6, -1.7, -17.18, -11.39,
