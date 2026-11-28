@@ -23,6 +23,8 @@ const defaults = {
     scoringMode: "sets",
     raceLength: 4,
     setCount: 3,
+    breakFormat: "manual",
+    openingBreaker: 0,
 
     clockEnabled: true,
     shotDuration: 30,
@@ -63,7 +65,8 @@ function createMatch() {
 
         setWinners: Array(count).fill(null),
         currentSet: 0,
-        activePlayer: 0,
+        breaker: settings.openingBreaker,
+        activePlayer: settings.openingBreaker,
         winner: null,
 
         extensions: [
@@ -88,6 +91,19 @@ let history = [];
 let deadline = null;
 let lastDisplayedSecond = null;
 let audioContext = null;
+const activeAudioSources = new Set();
+
+function stopClockAudio() {
+    for (const source of activeAudioSources) {
+        try {
+            source.stop();
+        } catch (error) {
+            // Source may have already ended.
+        }
+    }
+
+    activeAudioSources.clear();
+}
 let wakeLock = null;
 
 // ==========================================
@@ -120,6 +136,7 @@ function loadState() {
 
         match = saved.match || createMatch();
         match.delayRemaining ??= 0;
+        match.breaker ??= match.activePlayer;
         history = saved.history || [];
 
         if (!match.clockMode) {
@@ -173,6 +190,7 @@ function undo() {
     settings = { ...defaults, ...previous.settings };
     match = previous.match;
     match.delayRemaining ??= 0;
+    match.breaker ??= match.activePlayer;
 
     if (!match.clockMode) {
         match.clockMode =
@@ -480,6 +498,20 @@ function awardRack(player) {
         }
     }
 
+    if (match.winner === null) {
+        if (settings.breakFormat === "alternate") {
+            match.breaker = 1 - match.breaker;
+            match.activePlayer = match.breaker;
+
+        } else if (settings.breakFormat === "winner") {
+            match.breaker = player;
+            match.activePlayer = match.breaker;
+
+        } else {
+            match.breaker = match.activePlayer;
+        }
+    }
+
     replenishExtensions();
 
     prepareClock(
@@ -503,6 +535,40 @@ function subtractRack(player) {
 
     match.scores[index][player]--;
 
+    if (settings.breakFormat === "alternate") {
+        match.breaker = 1 - match.breaker;
+
+        if (
+            match.clockState === "ready" &&
+            match.clockMode === "after-break"
+        ) {
+            match.activePlayer = match.breaker;
+        }
+    }
+
+    render();
+    saveState();
+}
+
+function correctBreaker() {
+    if (match.winner !== null || match.shootout) return;
+
+    const nextBreaker = 1 - match.breaker;
+
+    if (!confirm(
+        "Change designated breaker to " +
+        settings.names[nextBreaker] + "?"
+    )) return;
+
+    rememberState();
+
+    match.breaker = nextBreaker;
+
+    if (match.clockState === "ready" &&
+        match.clockMode === "after-break") {
+        match.activePlayer = nextBreaker;
+    }
+
     render();
     saveState();
 }
@@ -518,6 +584,23 @@ function selectPlayer(player) {
 
     render();
     saveState();
+}
+
+function dryBreak() {
+    if (!settings.clockEnabled) return;
+    if (match.winner !== null) return;
+    if (match.shootout) return;
+
+    rememberState();
+
+    match.activePlayer = 1 - match.breaker;
+
+    prepareClock(
+        settings.firstShotDuration,
+        "after-break"
+    );
+
+    startClock();
 }
 
 function switchPlayer() {
@@ -724,10 +807,13 @@ function tone(
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
 
+    activeAudioSources.add(oscillator);
+
     oscillator.start(start);
     oscillator.stop(start + duration + 0.02);
 
     oscillator.onended = () => {
+        activeAudioSources.delete(oscillator);
         oscillator.disconnect();
         gain.disconnect();
     };
@@ -903,6 +989,7 @@ function playTournamentSequence(
         source.connect(gain);
 
         source.onended = () => {
+            activeAudioSources.delete(source);
 
             source.disconnect();
             remaining--;
@@ -912,6 +999,8 @@ function playTournamentSequence(
                 compressor.disconnect();
             }
         };
+
+        activeAudioSources.add(source);
 
         source.start(start + offset);
     }
@@ -1172,6 +1261,9 @@ function renderClock() {
     $("after-break-label").textContent =
         `${settings.firstShotDuration}s`;
 
+    $("dry-break-label").textContent =
+        `${settings.firstShotDuration}s`;
+
     $("normal-clock-label").textContent =
         `${settings.shotDuration}s`;
 
@@ -1187,6 +1279,11 @@ function renderClock() {
 
     $("after-break-btn").disabled =
         match.winner !== null || !!match.shootout;
+
+    $("dry-break-btn").disabled =
+        !settings.clockEnabled ||
+        match.winner !== null ||
+        !!match.shootout;
 
     $("normal-clock-btn").disabled =
         match.winner !== null || !!match.shootout;
@@ -1279,6 +1376,11 @@ function renderScoreboard() {
 
         $(`active-${n}`).hidden = !isActive;
 
+        $(`breaker-${n}`).hidden =
+            match.breaker !== player ||
+            match.winner !== null ||
+            !!match.shootout;
+
         $(`player-panel-${n}`).classList.toggle(
             "active",
             isActive
@@ -1329,6 +1431,14 @@ function renderScoreboard() {
 
         const exhausted =
             extensionsLeft <= 0;
+
+        $(`extension-name-${n}`).textContent =
+            settings.names[player];
+
+        $(`extension-${n}`).classList.toggle(
+            "active-extension",
+            match.activePlayer === player
+        );
 
         $(`extension-count-${n}`).textContent =
             `${extensionsLeft} / ${settings.extensionsPerRack}`;
@@ -1518,6 +1628,8 @@ function openSettings() {
     $("scoring-mode").value = settings.scoringMode;
     $("race-length").value = settings.raceLength;
     $("set-count").value = settings.setCount;
+    $("break-format").value = settings.breakFormat;
+    $("opening-breaker").value = settings.openingBreaker;
 
     $("clock-enabled").checked = settings.clockEnabled;
     $("shot-duration").value = settings.shotDuration;
@@ -1590,6 +1702,8 @@ function readSettings() {
         scoringMode: $("scoring-mode").value,
         raceLength: number("race-length"),
         setCount: number("set-count"),
+        breakFormat: $("break-format").value,
+        openingBreaker: number("opening-breaker"),
 
         clockEnabled: $("clock-enabled").checked,
         shotDuration: number("shot-duration"),
@@ -1837,17 +1951,119 @@ function testSound() {
 // EVENT LISTENERS
 // ==========================================
 
+// Tap-and-hold shot controls
+
+let heldClockControl = null;
+
+function cancelHeldClockControl() {
+    if (!heldClockControl) return;
+
+    const { button, pointerId } = heldClockControl;
+
+    heldClockControl = null;
+    button.classList.remove("clock-held");
+
+    if (button.hasPointerCapture(pointerId)) {
+        button.releasePointerCapture(pointerId);
+    }
+}
+
+function bindHoldControl(id, action) {
+    const button = $(id);
+
+    button.addEventListener("pointerdown", event => {
+        if (!event.isPrimary || event.button !== 0) return;
+        if (button.disabled || heldClockControl) return;
+        if (!settings.clockEnabled) return;
+        if (match.winner !== null || match.shootout) return;
+
+        event.preventDefault();
+
+        button.setPointerCapture(event.pointerId);
+
+        heldClockControl = {
+            button,
+            pointerId: event.pointerId
+        };
+
+        button.classList.add("clock-held");
+
+        stopClockAudio();
+        pauseClock();
+    });
+
+    button.addEventListener("pointerup", event => {
+        if (heldClockControl?.button !== button) return;
+        if (heldClockControl.pointerId !== event.pointerId) return;
+
+        cancelHeldClockControl();
+
+        action();
+    });
+
+    for (const type of ["pointercancel", "lostpointercapture"]) {
+        button.addEventListener(type, event => {
+            if (
+                heldClockControl?.button === button &&
+                heldClockControl.pointerId === event.pointerId
+            ) {
+                cancelHeldClockControl();
+            }
+        });
+    }
+
+    button.addEventListener("contextmenu", event => {
+        event.preventDefault();
+    });
+
+    // Preserve keyboard and assistive-technology activation.
+    button.addEventListener("click", event => {
+        if (event.detail === 0 && !heldClockControl) {
+            action();
+        }
+    });
+}
+
+// Prevent conflicting actions during a held clock control.
+
+document.addEventListener("click", event => {
+    if (!heldClockControl) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+}, true);
+
+document.addEventListener("pointerdown", event => {
+    if (!heldClockControl) return;
+
+    if (event.pointerId !== heldClockControl.pointerId) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }
+}, true);
+
+window.addEventListener("blur", cancelHeldClockControl);
+window.addEventListener("pagehide", cancelHeldClockControl);
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") {
+        cancelHeldClockControl();
+    }
+});
+
 $("pause-btn").addEventListener("click", toggleClock);
-$("reset-btn").addEventListener("click", resetClock);
+bindHoldControl("reset-btn", resetClock);
 $("undo-btn").addEventListener("click", undo);
 
-$("after-break-btn").addEventListener(
-    "click",
+bindHoldControl(
+    "after-break-btn",
     () => selectClockMode("after-break")
 );
 
-$("normal-clock-btn").addEventListener(
-    "click",
+bindHoldControl("dry-break-btn", dryBreak);
+
+bindHoldControl(
+    "normal-clock-btn",
     () => selectClockMode("normal")
 );
 
@@ -1899,6 +2115,14 @@ for (let player = 0; player < 2; player++) {
         () => useExtension(player)
     );
 
+    $(`breaker-${n}`).addEventListener(
+        "click",
+        event => {
+            event.stopPropagation();
+            correctBreaker();
+        }
+    );
+
     $(`player-${n}-row`).addEventListener(
         "click",
         () => selectPlayer(player)
@@ -1945,10 +2169,7 @@ console.log("Pool Shot Clock v0.3b initialized.");
 
 /* Version 0.3a controls */
 
-$("switch-btn").addEventListener(
-    "click",
-    switchPlayer
-);
+bindHoldControl("switch-btn", switchPlayer);
 
 
 /* ==========================================

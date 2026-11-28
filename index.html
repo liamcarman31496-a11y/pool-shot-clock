@@ -127,6 +127,14 @@
                                     AT TABLE
                                 </span>
 
+                                <button id="breaker-1"
+                                        class="breaker-indicator"
+                                        type="button"
+                                        aria-label="Correct designated breaker"
+                                        hidden>
+                                    BREAKER
+                                </button>
+
                                 <span id="scoreboard-ext-1"
                                       class="scoreboard-extension">
                                     1 EXT LEFT
@@ -182,6 +190,14 @@
                                       hidden>
                                     AT TABLE
                                 </span>
+
+                                <button id="breaker-2"
+                                        class="breaker-indicator"
+                                        type="button"
+                                        aria-label="Correct designated breaker"
+                                        hidden>
+                                    BREAKER
+                                </button>
 
                                 <span id="scoreboard-ext-2"
                                       class="scoreboard-extension">
@@ -247,6 +263,11 @@
                 <button id="extension-1"
                         class="extension-btn">
 
+                    <span id="extension-name-1"
+                          class="extension-name">
+                        PLAYER 1
+                    </span>
+
                     <span id="extension-count-1"
                           class="extension-count">
                         1 / 1
@@ -296,6 +317,11 @@
 
                 <button id="extension-2"
                         class="extension-btn">
+
+                    <span id="extension-name-2"
+                          class="extension-name">
+                        PLAYER 2
+                    </span>
 
                     <span id="extension-count-2"
                           class="extension-count">
@@ -351,6 +377,17 @@
             <span>AFTER BREAK</span>
 
             <strong id="after-break-label">
+                60s
+            </strong>
+
+        </button>
+
+        <button id="dry-break-btn"
+                class="clock-mode-btn">
+
+            <span>DRY BREAK</span>
+
+            <strong id="dry-break-label">
                 60s
             </strong>
 
@@ -572,6 +609,35 @@
                        step="2"
                        value="3"
                        required>
+            </label>
+
+            <label>
+                Break format
+
+                <select id="break-format">
+                    <option value="manual" selected>
+                        Manual
+                    </option>
+                    <option value="alternate">
+                        Alternate Break
+                    </option>
+                    <option value="winner">
+                        Winner Break
+                    </option>
+                </select>
+            </label>
+
+            <label>
+                Opening breaker
+
+                <select id="opening-breaker">
+                    <option value="0" selected>
+                        Player 1
+                    </option>
+                    <option value="1">
+                        Player 2
+                    </option>
+                </select>
             </label>
 
         </fieldset>
@@ -823,7 +889,7 @@
         </button>
 
         <div class="version-label">
-            Pool Shot Clock · v0.8.0
+            Pool Shot Clock · v0.8.1
         </div>
 
     </footer>

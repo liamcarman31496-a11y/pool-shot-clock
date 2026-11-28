@@ -299,8 +299,8 @@
 
 #clock-mode-controls {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
 }
 
 .clock-mode-btn {
@@ -1713,3 +1713,100 @@ body {
     }
 }
 
+
+
+/* v0.8.1 — Three clock-mode controls */
+
+#clock-mode-controls .clock-mode-btn {
+    min-width: 0;
+    gap: 4px;
+    padding-inline: 4px;
+}
+
+#clock-mode-controls .clock-mode-btn span {
+    text-align: center;
+    letter-spacing: 0.2px;
+}
+
+
+/* v0.8.1 — Extension player identification */
+
+.extension-btn .extension-name {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.extension-btn:not(.exhausted):not(:disabled) {
+    background: #292c31;
+    border: 2px solid #45494e;
+}
+
+.extension-btn.active-extension:not(.exhausted):not(:disabled) {
+    background: var(--green-dark);
+    border-color: var(--green-bright);
+    box-shadow: inset 0 0 0 1px var(--green-bright);
+}
+
+.extension-btn.active-extension .extension-name {
+    color: var(--green-bright);
+}
+
+.extension-btn:not(.active-extension) .extension-count {
+    color: #c1c5cb;
+}
+
+/* v0.8.1 — Tap-and-hold clock controls */
+
+#reset-btn,
+#switch-btn,
+#after-break-btn,
+#dry-break-btn,
+#normal-clock-btn {
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+button.clock-held {
+    filter: brightness(0.75);
+    transform: scale(0.97);
+    box-shadow: inset 0 0 0 2px #42ce83;
+}
+
+/* v0.8.1 — Designated breaker indicator */
+
+.breaker-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 20px;
+    padding: 2px 6px;
+    background: #203649;
+    border: 1px solid #527fa5;
+    border-radius: 3px;
+    color: #b4d7f4;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.breaker-indicator[hidden] {
+    display: none;
+}
+
+.player-status {
+    flex-wrap: wrap;
+}
+
+.breaker-indicator:active {
+    background: #365875;
+}
