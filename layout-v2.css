@@ -1810,3 +1810,42 @@ button.clock-held {
 .breaker-indicator:active {
     background: #365875;
 }
+
+/* v0.8.2 — Compact landscape layout */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    #app {
+        gap: 4px;
+        padding-bottom: max(5px, env(safe-area-inset-bottom, 0px));
+    }
+
+    .player-panel {
+        padding-block: 3px;
+        gap: 3px;
+    }
+
+    .score-controls button,
+    .extension-btn {
+        min-height: 48px;
+    }
+
+    .extension-btn .extension-name {
+        font-size: 12px;
+        line-height: 1.1;
+    }
+
+    .extension-btn .extension-count {
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    #clock-mode-controls .clock-mode-btn {
+        min-height: 34px;
+        gap: 2px;
+    }
+
+    .player-status {
+        gap: 6px;
+    }
+}
